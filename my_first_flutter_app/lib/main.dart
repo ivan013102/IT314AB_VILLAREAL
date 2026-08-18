@@ -1,67 +1,117 @@
 import 'package:flutter/material.dart';
 
 void main() {
+  // FLAG 7 - Sort students alphabetically before running the app
+  students.sort(
+        (a, b) => a.name.toLowerCase().compareTo(
+      b.name.toLowerCase(),
+    ),
+  );
+
   runApp(const MyApp());
 }
 
-// FLAG 7 - Profile Data
-class Profile {
+// STUDENT DATA
+class Student {
   final String image;
-  final String? name;
-  final String? course;
-  final int? age;
-  final String? hobby;
+  final String name;
+  final String course;
+  final String yearLevel;
+  final int age;
+  final String hobby;
 
-  const Profile({
+  // FLAG 5 - Additional Fields
+  final String studentId;
+  final String email;
+  final String favoriteSubject;
+
+  const Student({
     required this.image,
-    this.name,
-    this.course,
-    this.age,
-    this.hobby,
+    required this.name,
+    required this.course,
+    required this.yearLevel,
+    required this.age,
+    required this.hobby,
+    required this.studentId,
+    required this.email,
+    required this.favoriteSubject,
   });
 }
 
-// Five different profiles
-// Some profiles intentionally have missing information
-const List<Profile> profiles = [
-  Profile(
+// STUDENT LIST
+// FLAG 7 - This list can be sorted.
+List<Student> students = [
+  Student(
     image: "assets/profile2.jpg",
     name: "Ivan Villareal",
-    course: "BSIT - 3",
+    course: "BSIT",
+    yearLevel: "3rd Year",
     age: 24,
     hobby: "Photography, Videography, & Video Editing",
+    studentId: "2026-0001",
+    email: "ivan.villareal@dbtc-cebu.edu.ph",
+    favoriteSubject: "Snacks",
   ),
 
-  Profile(
+  Student(
     image: "assets/Profile1.jpg",
     name: "Mannes Artajo",
-    course: "BSIT - 2",
+    course: "BSIT",
+    yearLevel: "2nd Year",
     age: 21,
-    // Hobby is missing
+    hobby: "Reading",
+    studentId: "2026-0002",
+    email: "mannes.artajo@dbtc-cebu.edu.ph",
+    favoriteSubject: "Programming",
   ),
 
-  Profile(
+  Student(
     image: "assets/profile3.jpg",
     name: "Wilken Montebon",
-    // Course is missing
+    course: "BSIT",
+    yearLevel: "1st Year",
     age: 20,
     hobby: "Basketball",
+    studentId: "2026-0003",
+    email: "wilken.montebon@dbtc-cebu.edu.ph",
+    favoriteSubject: "Database",
   ),
 
-  Profile(
+  Student(
     image: "assets/profile4.png",
-    // Name is missing
-    course: "BSIT - 4",
+    name: "John Kevin Villacorte",
+    course: "BSIT",
+    yearLevel: "4th Year",
     age: 23,
     hobby: "Drawing",
+    studentId: "2026-0004",
+    email: "john.villacorte@dbtc-cebu.edu.ph",
+    favoriteSubject: "Web Development",
   ),
 
-  Profile(
+  Student(
     image: "assets/profile5.jpg",
     name: "Keith Francheska Lopez",
-    course: "BSIT - 3",
+    course: "BSIT",
+    yearLevel: "3rd Year",
     age: 22,
     hobby: "Gaming",
+    studentId: "2026-0005",
+    email: "keith.lopez@dbtc-cebu.edu.ph",
+    favoriteSubject: "Software Engineering",
+  ),
+
+  // MARIA SANTOS
+  Student(
+    image: "assets/Profile6.jpg",
+    name: "Maria Santos",
+    course: "BSIT",
+    yearLevel: "2nd Year",
+    age: 21,
+    hobby: "Photography",
+    studentId: "2026-0006",
+    email: "maria.santos@dbtc-cebu.edu.ph",
+    favoriteSubject: "Multimedia",
   ),
 ];
 
@@ -77,171 +127,150 @@ class MyApp extends StatelessWidget {
         backgroundColor: Colors.blueGrey,
 
         appBar: AppBar(
-          title: const Text("My First Flutter Application"),
+          title: const Text("Student Directory"),
           backgroundColor: Colors.teal,
         ),
 
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        // FLAG 6 - EMPTY STATE
+        body: students.isEmpty
+            ? const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.people_outline,
+                color: Colors.white,
+                size: 70,
+              ),
 
-              children: [
+              SizedBox(height: 15),
 
-                // FLAG 7 - Display Five Profiles
-                ...profiles.map(
-                      (profile) => Card(
-                    margin: const EdgeInsets.all(20),
+              Text(
+                "No students found.",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
 
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
+              SizedBox(height: 8),
 
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+              Text(
+                "The student list is currently empty.",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        )
 
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+        // FLAG 4 & 5 - STUDENT LIST
+            : ListView.builder(
+          padding: const EdgeInsets.all(10),
 
-                        children: [
+          itemCount: students.length,
 
-                          // Profile Image
-                          Container(
-                            padding: const EdgeInsets.all(3),
+          itemBuilder: (context, index) {
+            final student = students[index];
 
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.teal,
-                            ),
+            return Card(
+              margin: const EdgeInsets.all(10),
 
-                            child: CircleAvatar(
-                              radius: 50,
-                              backgroundImage:
-                              AssetImage(profile.image),
-                            ),
-                          ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
 
-                          const SizedBox(height: 30),
-
-                          // Name
-                          Text(
-                            profile.name ?? "Not provided",
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          // Course & Section
-                          Text(
-                            profile.course ?? "Unknown",
-                            style: const TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-
-                          const SizedBox(height: 15),
-
-                          const Divider(),
-
-                          const SizedBox(height: 10),
-
-                          // Age
-                          Text(
-                            "Age: ${profile.age ?? "Not provided"}",
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          // Hobby
-                          Text(
-                            profile.hobby ?? "Not provided",
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
+                child: Column(
+                  children: [
+                    // Profile Image
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage(
+                        student.image,
                       ),
                     ),
-                  ),
-                ),
 
-                // My Favorites
-                Card(
-                  margin: const EdgeInsets.all(20),
+                    const SizedBox(height: 15),
 
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-
-                      children: [
-
-                        const Text(
-                          "My Favorites",
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(height: 15),
-
-                        const Chip(
-                          label: Text(
-                            "Favorite Game: Basketball",
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        const Text(
-                          "Favorite Food: Chicken Halang-Halang",
-                          style: TextStyle(fontSize: 16),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        const Text(
-                          "Favorite Movie: Paksiw Anak sa Liking Kawayan",
-                          style: TextStyle(fontSize: 16),
-                        ),
-
-                        const SizedBox(height: 15),
-
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-
-                          children: [
-                            Text(
-                              "Photography",
-                              style: TextStyle(fontSize: 16),
-                            ),
-
-                            SizedBox(width: 30),
-
-                            Text(
-                              "Videography",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      ],
+                    // Name
+                    Text(
+                      student.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+
+                    const SizedBox(height: 8),
+
+                    // Course & Year
+                    Text(
+                      "${student.course} - ${student.yearLevel}",
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Age
+                    Text(
+                      "Age: ${student.age}",
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Hobby
+                    Text(
+                      "Hobby: ${student.hobby}",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const Divider(height: 30),
+
+                    // FLAG 5 - Student ID
+                    Text(
+                      "Student ID: ${student.studentId}",
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Email
+                    Text(
+                      "Email: ${student.email}",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Favorite Subject
+                    Text(
+                      "Favorite Subject: ${student.favoriteSubject}",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
