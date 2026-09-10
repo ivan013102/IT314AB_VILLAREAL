@@ -15,6 +15,7 @@ class Student {
   final String studentId;
   final String email;
   final String favoriteSubject;
+  final bool isActive;
 
   const Student({
     required this.image,
@@ -26,6 +27,7 @@ class Student {
     required this.studentId,
     required this.email,
     required this.favoriteSubject,
+    required this.isActive,
   });
 }
 
@@ -41,6 +43,7 @@ final List<Student> students = [
     studentId: "2026-0001",
     email: "ivan.villareal@dbtc-cebu.edu.ph",
     favoriteSubject: "Snacks",
+    isActive: true,
   ),
   Student(
     image: "assets/Profile1.jpg",
@@ -52,6 +55,7 @@ final List<Student> students = [
     studentId: "2026-0002",
     email: "mannes.artajo@dbtc-cebu.edu.ph",
     favoriteSubject: "Programming",
+    isActive: false,
   ),
   Student(
     image: "assets/profile3.jpg",
@@ -63,6 +67,7 @@ final List<Student> students = [
     studentId: "2026-0003",
     email: "wilken.montebon@dbtc-cebu.edu.ph",
     favoriteSubject: "Database",
+    isActive: true,
   ),
   Student(
     image: "assets/profile4.png",
@@ -74,6 +79,7 @@ final List<Student> students = [
     studentId: "2026-0004",
     email: "john.villcorte@dbtc-cebu.edu.ph",
     favoriteSubject: "Web Development",
+    isActive: false,
   ),
   Student(
     image: "assets/profile5.jpg",
@@ -85,6 +91,7 @@ final List<Student> students = [
     studentId: "2026-0005",
     email: "keith.lopez@dbtc-cebu.edu.ph",
     favoriteSubject: "Software Engineering",
+    isActive: true,
   ),
   Student(
     image: "assets/Profile6.jpg",
@@ -96,6 +103,7 @@ final List<Student> students = [
     studentId: "2026-0006",
     email: "maria.santos@dbtc-cebu.edu.ph",
     favoriteSubject: "Multimedia",
+    isActive: true,
   ),
 ];
 
@@ -122,21 +130,43 @@ class StudentDirectoryPage extends StatefulWidget {
 }
 
 class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
-  // Each student has an independent favorite state.
-  final List<bool> isFavorite = List<bool>.filled(
-    students.length,
-    false,
-  );
+  // FLAG 4 & FLAG 5 - LOADING STATE
+  bool isLoading = true;
 
-  // FLAG 4 - FAVORITE
-  void _toggleFavorite(int index) {
-    setState(() {
-      isFavorite[index] = !isFavorite[index];
+  // FAVORITE STUDENTS
+  final Set<String> favoriteStudents = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Simulate loading student data.
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
   }
 
-  // FLAG 5 - DELETE
-  // Shows a confirmation dialog before deleting.
+  // FAVORITE
+  void _toggleFavorite(Student student) {
+    setState(() {
+      if (favoriteStudents.contains(student.studentId)) {
+        favoriteStudents.remove(student.studentId);
+      } else {
+        favoriteStudents.add(student.studentId);
+      }
+    });
+  }
+
+  // CHECK FAVORITE
+  bool _isFavorite(Student student) {
+    return favoriteStudents.contains(student.studentId);
+  }
+
+  // DELETE
   void _showDeleteDialog(int index) {
     final student = students[index];
 
@@ -166,7 +196,9 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
 
                 setState(() {
                   students.removeAt(index);
-                  isFavorite.removeAt(index);
+
+                  // Remove from favorites if necessary.
+                  favoriteStudents.remove(student.studentId);
                 });
 
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -185,7 +217,89 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
     );
   }
 
-  // FLAG 6 & FLAG 7 - EDIT
+  // RESTORE STUDENTS
+  void _restoreStudents() {
+    setState(() {
+      students.clear();
+
+      students.addAll([
+        const Student(
+          image: "assets/profile2.jpg",
+          name: "Ivan Villareal",
+          course: "BSIT",
+          yearLevel: "3rd Year",
+          age: 24,
+          hobby: "Photography, Videography, & Video Editing",
+          studentId: "2026-0001",
+          email: "ivan.villareal@dbtc-cebu.edu.ph",
+          favoriteSubject: "Snacks",
+          isActive: true,
+        ),
+        const Student(
+          image: "assets/Profile1.jpg",
+          name: "Mannes Artajo",
+          course: "BSIT",
+          yearLevel: "2nd Year",
+          age: 21,
+          hobby: "Reading",
+          studentId: "2026-0002",
+          email: "mannes.artajo@dbtc-cebu.edu.ph",
+          favoriteSubject: "Programming",
+          isActive: false,
+        ),
+        const Student(
+          image: "assets/profile3.jpg",
+          name: "Wilken Montebon",
+          course: "BSIT",
+          yearLevel: "1st Year",
+          age: 20,
+          hobby: "Basketball",
+          studentId: "2026-0003",
+          email: "wilken.montebon@dbtc-cebu.edu.ph",
+          favoriteSubject: "Database",
+          isActive: true,
+        ),
+        const Student(
+          image: "assets/profile4.png",
+          name: "John Kevin Villacorte",
+          course: "BSIT",
+          yearLevel: "4th Year",
+          age: 23,
+          hobby: "Drawing",
+          studentId: "2026-0004",
+          email: "john.villcorte@dbtc-cebu.edu.ph",
+          favoriteSubject: "Web Development",
+          isActive: false,
+        ),
+        const Student(
+          image: "assets/profile5.jpg",
+          name: "Keith Francheska Lopez",
+          course: "BSIT",
+          yearLevel: "3rd Year",
+          age: 22,
+          hobby: "Gaming",
+          studentId: "2026-0005",
+          email: "keith.lopez@dbtc-cebu.edu.ph",
+          favoriteSubject: "Software Engineering",
+          isActive: true,
+        ),
+        const Student(
+          image: "assets/Profile6.jpg",
+          name: "Maria Santos",
+          course: "BSIT",
+          yearLevel: "2nd Year",
+          age: 21,
+          hobby: "Photography",
+          studentId: "2026-0006",
+          email: "maria.santos@dbtc-cebu.edu.ph",
+          favoriteSubject: "Multimedia",
+          isActive: true,
+        ),
+      ]);
+    });
+  }
+
+  // EDIT
   void _showEditDialog(Student student) {
     showDialog(
       context: context,
@@ -196,12 +310,15 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
             "You are about to edit ${student.name}'s information.",
           ),
           actions: [
+            // CANCEL BUTTON
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
               child: const Text("Cancel"),
             ),
+
+            // CONTINUE BUTTON
             ElevatedButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
@@ -222,7 +339,7 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
     );
   }
 
-  // FLAG 2 - TOUCH ANYWHERE ON CARD
+  // TOUCH ANYWHERE ON CARD
   void _showCardTapped(Student student) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -243,19 +360,43 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
         backgroundColor: Colors.teal,
       ),
 
-      // EMPTY STATE
-      body: students.isEmpty
+      // FLAG 5 & FLAG 6 - MULTIPLE UI STATES
+      body: isLoading
           ? const Center(
+        // STATE 1: LOADING
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            CircularProgressIndicator(
+              color: Colors.white,
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Loading Student Directory...",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      )
+          : students.isEmpty
+          ? Center(
+        // STATE 2: EMPTY
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
               Icons.people_outline,
               color: Colors.white,
               size: 70,
             ),
-            SizedBox(height: 15),
-            Text(
+
+            const SizedBox(height: 15),
+
+            const Text(
               "No students found.",
               style: TextStyle(
                 color: Colors.white,
@@ -263,20 +404,30 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
-            Text(
+
+            const SizedBox(height: 8),
+
+            const Text(
               "The student list is currently empty.",
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 16,
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            // RESTORE BUTTON
+            ElevatedButton.icon(
+              onPressed: _restoreStudents,
+              icon: const Icon(Icons.refresh),
+              label: const Text("Restore Students"),
+            ),
           ],
         ),
       )
-
-      // STUDENT LIST
           : ListView.builder(
+        // STATE 3: STUDENTS AVAILABLE
         padding: const EdgeInsets.all(10),
         itemCount: students.length,
 
@@ -286,13 +437,13 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
           return Card(
             margin: const EdgeInsets.all(10),
 
-            // Change appearance when favorited
-            color: isFavorite[index]
+            // Change appearance when favorited.
+            color: _isFavorite(student)
                 ? Colors.amber.shade100
                 : Colors.white,
 
             child: InkWell(
-              // FLAG 2 - Tap anywhere on card
+              // Tap anywhere on card.
               onTap: () => _showCardTapped(student),
 
               child: Padding(
@@ -319,8 +470,40 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
                       ),
                     ),
 
+                    const SizedBox(height: 5),
+
+                    // FLAG 1 - ACTIVE / INACTIVE
+                    student.isActive
+                        ? const Text(
+                      "ACTIVE",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                        : const Text(
+                      "INACTIVE",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    // FLAG 2 - SHOW WARNING ONLY WHEN INACTIVE
+                    if (!student.isActive)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text(
+                          "⚠ This student is currently inactive.",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
                     // FAVORITE LABEL
-                    if (isFavorite[index])
+                    if (_isFavorite(student))
                       const Padding(
                         padding: EdgeInsets.only(top: 5),
                         child: Text(
@@ -385,7 +568,7 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
 
                     const SizedBox(height: 15),
 
-                    // FLAG 7 - MULTIPLE ACTIONS
+                    // ACTION BUTTONS
                     Wrap(
                       spacing: 10,
                       runSpacing: 10,
@@ -394,15 +577,15 @@ class _StudentDirectoryPageState extends State<StudentDirectoryPage> {
                         // FAVORITE BUTTON
                         ElevatedButton.icon(
                           onPressed: () {
-                            _toggleFavorite(index);
+                            _toggleFavorite(student);
                           },
                           icon: Icon(
-                            isFavorite[index]
+                            _isFavorite(student)
                                 ? Icons.favorite
                                 : Icons.favorite_border,
                           ),
                           label: Text(
-                            isFavorite[index]
+                            _isFavorite(student)
                                 ? "Favorited"
                                 : "Favorite",
                           ),
